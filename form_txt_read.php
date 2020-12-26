@@ -1,15 +1,59 @@
 <?php
-$str = ''; // 出力用の空の文字列
-$file = fopen('data/program.csv', 'r'); // ファイルを開く（読み取り専用）
-flock($file, LOCK_EX); // ファイルをロック
-if ($file) {
-  while ($line = fgets($file)) { // fgets()で1行ずつ取得→$lineに格納
-    $str .= "<tr><td>{$line}</td></tr>"; // 取得したデータを$strに入れる
+$user = 'admin';
+$password = 'pass';
+
+if (!isset($_SERVER['PHP_AUTH_USER'])) {
+  header('WWW-Authenticate: Basic realm="Private Page"');
+  header('HTTP/1.0 401 Unauthorized');
+
+  die('このページを見るにはログインが必要です');
+} else {
+  if (
+    $_SERVER['PHP_AUTH_USER'] != $user
+    || $_SERVER['PHP_AUTH_PW'] != $password
+  ) {
+
+    header('WWW-Authenticate: Basic realm="Private Page"');
+    header('HTTP/1.0 401 Unauthorized');
+    die('このページを見るにはログインが必要です');
   }
 }
-flock($file, LOCK_UN); // ロック解除
-fclose($file); // ファイル閉じる
-// （$strに全部の情報が入る！）
+
+// DB接続情報
+$dbn = 'mysql:dbname=gsacf_d07_10;charset=utf8;port=3306;host=localhost';
+$user = 'root';
+$pwd = '';
+
+// DB接続
+try {
+  $pdo = new PDO($dbn, $user, $pwd);
+} catch (PDOException $e) {
+  echo json_encode(["db error" => "{$e->getMessage()}"]);
+  exit();
+}
+
+// 参照はSELECT文！
+$sql = 'SELECT * FROM form_table';
+$stmt = $pdo->prepare($sql);
+$status = $stmt->execute();
+
+// データを表示しやすいようにまとめる
+if ($status == false) {
+  $error = $stmt->errorInfo();
+  exit('sqlError:' . $error[2]);
+} else {
+  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $output = "";
+  foreach ($result as $record) {
+    $output .= "<tr>";
+    $output .= "<td>{$record["company"]}</td>";
+    $output .= "<td>{$record["name"]}</td>";
+    $output .= "<td>{$record["phone"]}</td>";
+    $output .= "<td>{$record["email"]}</td>";
+    $output .= "<td>{$record["content"]}</td>";
+    $output .= "</tr>";
+  }
+}
 
 ?>
 
@@ -19,8 +63,8 @@ fclose($file); // ファイル閉じる
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <title>結果発表</title>
+  <link rel="stylesheet" href="style.scss">
+  <title>問い合わせ一覧</title>
 
   <!-- フォントの設定 -->
   <script>
@@ -56,17 +100,20 @@ fclose($file); // ファイル閉じる
   <!-- フォントの設定ここまで -->
 </head>
 
-<body>
-  <h1>君は分かってるね～！今年に向けて予習しよう！</h1>
-  <fieldset>
-    <legend>たなくじの予習、写真に撮って運試し！</legend>
-    <table>
-      <img src="img/tanakuji_2016_2.gif" alt="">
-    </table>
-    <a href="survey_txt_input.php" class="btn btn--yellow btn--cubic">入力画面に戻る</a>
+<html>
 
-  </fieldset>
-  <footer>読み取りデータ<br><?= $str ?></footer>
+<head>
+  <title>問い合わせリスト一覧</title>
+</head>
+
+<body>
+
+  <h1>問い合わせ一覧</h1>
+  <tbody>
+    <!-- ↓に<tr><td>deadline</td><td>todo</td><tr>の形でデータが入る -->
+    <?= $output ?>
+  </tbody>
+
 </body>
 
 </html>

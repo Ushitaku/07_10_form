@@ -52,6 +52,7 @@
         <li><a href="#">２ページ目</a></li>
         <li><a href="#">３ページ目</a></li>
         <li><a href="form_txt_input.php">お問い合わせ</a></li>
+        <li><a href="form_txt_read.php">管理者画面</a></li>
     </div>
     </ul>
   </nav>
@@ -87,6 +88,8 @@
       <input type="submit" class="Form-Btn" value="送信する">
     </div>
   </form>
+
+  <footer class="footer">©2020</footer>
 </body>
 
 </html>

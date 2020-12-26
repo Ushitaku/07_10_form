@@ -67,25 +67,25 @@
         <p class="Form-Item-Label">
           <span class="Form-Item-Label-Required">必須</span>会社名
         </p>
-        <input type="text" class="Form-Item-Input" placeholder="例）株式会社○○" name="company">
+        <input type="text" class="Form-Item-Input" placeholder="例）株式会社○○" name="company" required>
       </div>
       <div class="Form-Item">
         <p class="Form-Item-Label"><span class="Form-Item-Label-Required">必須</span>氏名</p>
-        <input type="text" class="Form-Item-Input" placeholder="例）倖田來未" name="name">
+        <input type="text" class="Form-Item-Input" placeholder="例）倖田來未" name="name" required>
       </div>
       <div class="Form-Item">
         <p class="Form-Item-Label"><span class="Form-Item-Label-Required">必須</span>電話番号</p>
-        <input type="text" class="Form-Item-Input" placeholder="例）000-0000-0000" name="phone">
+        <input type="text" class="Form-Item-Input" placeholder="例）000-0000-0000" name="phone" required>
       </div>
       <div class="Form-Item">
         <p class="Form-Item-Label"><span class="Form-Item-Label-Required">必須</span>メールアドレス</p>
-        <input type="email" class="Form-Item-Input" placeholder="例）example@gmail.com" name="email">
+        <input type="email" class="Form-Item-Input" placeholder="例）example@gmail.com" name="email" required>
       </div>
       <div class="Form-Item">
         <p class="Form-Item-Label isMsg"><span class="Form-Item-Label-Required">必須</span>お問い合わせ内容</p>
-        <textarea class="Form-Item-Textarea" name="content"></textarea>
+        <textarea class="Form-Item-Textarea" name="content" required></textarea>
       </div>
-      <input type="submit" class="Form-Btn" value="送信する">
+      <input type="submit" class="Form-Btn" name="btn_submit" value="送信する" required>
     </div>
   </form>
 

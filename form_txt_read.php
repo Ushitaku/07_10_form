@@ -1,6 +1,6 @@
 <?php
-$user = 'admin';
-$password = 'pass';
+$user = 'tes';
+$password = 'tes';
 
 if (!isset($_SERVER['PHP_AUTH_USER'])) {
   header('WWW-Authenticate: Basic realm="Private Page"');

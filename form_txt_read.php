@@ -19,21 +19,12 @@ if (!isset($_SERVER['PHP_AUTH_USER'])) {
   }
 }
 
-// DB接続情報
-$dbn = 'mysql:dbname=gsacf_d07_10;charset=utf8;port=3306;host=localhost';
-$user = 'root';
-$pwd = '';
-
-// DB接続
-try {
-  $pdo = new PDO($dbn, $user, $pwd);
-} catch (PDOException $e) {
-  echo json_encode(["db error" => "{$e->getMessage()}"]);
-  exit();
-}
+// データベース呼び出し
+include('function.php'); // 関数を記述したファイルの読み込み
+$pdo = connect_to_db(); // 関数実行
 
 // 参照はSELECT文！
-$sql = 'SELECT * FROM form_table';
+$sql = 'SELECT * FROM form_table2';
 $stmt = $pdo->prepare($sql);
 $status = $stmt->execute();
 
@@ -51,8 +42,18 @@ if ($status == false) {
     $output .= "<td>{$record["phone"]}</td>";
     $output .= "<td>{$record["email"]}</td>";
     $output .= "<td>{$record["content"]}</td>";
+    // edit deleteリンクを追加
+    $output .= "<td>
+     <a href='./form_edit.php?id={$record["id"]}'>編集</a>
+     </td>";
+    $output .= "<td>
+     <a href='./form_delete.php?id={$record["id"]}'>削除</a>
+     </td>";
     $output .= "</tr>";
   }
+  // $valueの参照を解除する．解除しないと，再度foreachした場合に最初からループしない
+  // 今回は以降foreachしないので影響なし
+  unset($record);
 }
 
 ?>
@@ -109,11 +110,22 @@ if ($status == false) {
 <body>
 
   <h1>問い合わせ一覧</h1>
-  <tbody>
-    <!-- ↓に<tr><td>deadline</td><td>todo</td><tr>の形でデータが入る -->
-    <?= $output ?>
-  </tbody>
-
+  <a href="./form_txt_input.php">入力画面</a>
+  <table>
+    <thead>
+      <tr>
+        <th>会社名</th>
+        <th>名前</th>
+        <th>電話番号</th>
+        <th>メールアドレス</th>
+        <th>内容</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- ここに<tr><td>deadline</td><td>todo</td><tr>の形でデータが入る -->
+      <?= $output ?>
+    </tbody>
+  </table>
 </body>
 
 </html>

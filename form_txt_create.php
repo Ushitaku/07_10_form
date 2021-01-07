@@ -8,30 +8,13 @@ $phone = $_POST['phone'];
 $email = $_POST['email'];
 $content = $_POST['content'];
 
-// DB接続情報
-$dbn = 'mysql:dbname=gsacf_d07_10;charset=utf8;port=3306;host=localhost';
-$user = 'root';
-$pwd = '';
-
-// DB接続
-try {
-    $pdo = new PDO($dbn, $user, $pwd);
-} catch (PDOException $e) {
-    echo json_encode(["db error" => "{$e->getMessage()}"]);
-    exit();
-}
-
-if (
-    !isset($_POST['company']) || $_POST['name'] == '' ||
-    !isset($_POST['phone']) || $_POST['email'] == ''  ||
-    !isset($_POST['content'])
-) {
-    exit('ParamError');
-}
+// データベース呼び出し
+include('function.php'); // 関数を記述したファイルの読み込み
+$pdo = connect_to_db(); // 関数実行
 
 // SQL作成&実行
 $sql = 'INSERT INTO
-form_table(id, company, name, phone, email , content , send_time)
+form_table2(id, company, name, phone, email , content , send_time)
 VALUES(NULL, :company, :name, :phone, :email , :content , sysdate())';
 $stmt = $pdo->prepare($sql);
 $stmt->bindValue(':company', $company, PDO::PARAM_STR);
